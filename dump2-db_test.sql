@@ -41,6 +41,59 @@ INSERT INTO `client` VALUES (1,'cliente 1','ACTIVE'),(2,'cliente 2','INACTIVE'),
 UNLOCK TABLES;
 
 --
+-- Table structure for table `empresa`
+--
+
+DROP TABLE IF EXISTS `empresa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `empresa` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `estado` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `empresa`
+--
+
+LOCK TABLES `empresa` WRITE;
+/*!40000 ALTER TABLE `empresa` DISABLE KEYS */;
+INSERT INTO `empresa` VALUES (1,'empresa 1','estado 1'),(2,'empresa 2','estado 2'),(3,'empresa 3','estado 1');
+/*!40000 ALTER TABLE `empresa` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `persona`
+--
+
+DROP TABLE IF EXISTS `persona`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `persona` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `estado` varchar(100) NOT NULL,
+  `empresa_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `persona_FK` (`empresa_id`),
+  CONSTRAINT `persona_FK` FOREIGN KEY (`empresa_id`) REFERENCES `empresa` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `persona`
+--
+
+LOCK TABLES `persona` WRITE;
+/*!40000 ALTER TABLE `persona` DISABLE KEYS */;
+INSERT INTO `persona` VALUES (1,'persona 1','estado 1',1),(2,'persona 4','estado 2',2),(3,'persona 2','estado 2',1),(4,'persona 3','estado 1',3),(5,'persona 5','estado 1',3),(6,'persona 6','estado 2',2);
+/*!40000 ALTER TABLE `persona` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `product`
 --
 
@@ -80,7 +133,7 @@ CREATE TABLE `sale` (
   `total` int(11) NOT NULL,
   `iva` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +142,7 @@ CREATE TABLE `sale` (
 
 LOCK TABLES `sale` WRITE;
 /*!40000 ALTER TABLE `sale` DISABLE KEYS */;
-INSERT INTO `sale` VALUES (1,'2021-11-11 00:00:00',0,119,19),(2,'2021-11-12 00:00:00',0,238,38);
+INSERT INTO `sale` VALUES (10,'2021-11-12 00:00:00',0,238,38),(11,'2021-11-12 00:00:00',0,238,38),(12,'2021-11-12 00:00:00',0,238,38);
 /*!40000 ALTER TABLE `sale` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,7 +164,7 @@ CREATE TABLE `sale_detail` (
   KEY `detalle_venta_FK_1` (`product_id`),
   CONSTRAINT `detalle_venta_FK` FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`),
   CONSTRAINT `detalle_venta_FK_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,8 +173,36 @@ CREATE TABLE `sale_detail` (
 
 LOCK TABLES `sale_detail` WRITE;
 /*!40000 ALTER TABLE `sale_detail` DISABLE KEYS */;
-INSERT INTO `sale_detail` VALUES (1,1,1,1,100),(2,1,1,2,200);
+INSERT INTO `sale_detail` VALUES (10,10,1,2,200),(11,11,1,2,200);
 /*!40000 ALTER TABLE `sale_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehiculo`
+--
+
+DROP TABLE IF EXISTS `vehiculo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vehiculo` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tipo` varchar(100) NOT NULL,
+  `descripcion` varchar(100) NOT NULL,
+  `persona_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `vehiculo_FK` (`persona_id`),
+  CONSTRAINT `vehiculo_FK` FOREIGN KEY (`persona_id`) REFERENCES `persona` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehiculo`
+--
+
+LOCK TABLES `vehiculo` WRITE;
+/*!40000 ALTER TABLE `vehiculo` DISABLE KEYS */;
+INSERT INTO `vehiculo` VALUES (1,'tipo 1','auto 1',1),(2,'tipo 2','auto 2',2),(3,'tipo 1','auto 3',4),(4,'tipo 1','auto 4',1),(5,'tipo 2','auto 5',6),(6,'tipo 2','auto 6',2);
+/*!40000 ALTER TABLE `vehiculo` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -131,6 +212,27 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'db_test'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `sp_del_sale_by_id` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`kumesoft`@`%` PROCEDURE `sp_del_sale_by_id`(p_sale_id INT)
+BEGIN
+	DELETE FROM db_test.sale_detail WHERE sale_id = p_sale_id;
+	DELETE FROM db_test.sale WHERE id = p_sale_id;
+	SELECT ROW_COUNT() AS affected_rows;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_ins_sale` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -246,7 +348,7 @@ CREATE DEFINER=`kumesoft`@`%` PROCEDURE `sp_sel_sale_by_id`(p_id INT)
 BEGIN
 	select 
 		v.id,
-		v.date,
+		date(v.date) as date,
 		v.discount,
 		v.iva,
 		v.total 
@@ -284,6 +386,31 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_sel_sale_list` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`kumesoft`@`%` PROCEDURE `sp_sel_sale_list`()
+BEGIN
+	select 
+		v.id,
+		date(v.date) as date,
+		v.discount,
+		v.iva,
+		v.total 
+	from sale v ;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -294,4 +421,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-14 10:22:55
+-- Dump completed on 2021-11-15 16:18:24
